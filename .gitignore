@@ -1,0 +1,5 @@
+/dist
+/ca_files
+/node_modules
+.env
+/ubuntu

@@ -1,0 +1,125 @@
+{
+  "name": "postgres-template",
+  "version": "0.1.0",
+  "description": "This template sets up different scripts and settings for postgres to run securely with a faster and more optimized than other versions.",
+  "main": "dist/index.js",
+  "files": [
+    "dist/**"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "tsup src/index.ts --watch",
+    "prepare": "husky install",
+    "clean": "rm -rf ./dist/",
+    "cm": "cz",
+    "lint": "eslint ./src/ --fix",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "typescript",
+    "postgres",
+    "node",
+    "template",
+    "secure"
+  ],
+  "bugs": {
+    "url": "https://github.com/CodeVault-LLC/postgres-template/issues"
+  },
+  "homepage": "https://github.com/CodeVault-LLC/postgres-template",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/codevault-llc/postgres-template.git"
+  },
+  "author": {
+    "name": "CodeVault-LLC",
+    "email": "codevaultllc@users.noreply.github.com",
+    "url": "https://github.com/codevaultllc"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/@ryansonshine/cz-conventional-changelog"
+    }
+  },
+  "lint-staged": {
+    "*.ts": "eslint --cache --cache-location .eslintcache --fix"
+  },
+  "exports": {
+    "./eslint/*": "./eslint/*.js",
+    "./prettier": "./prettier/index.js",
+    "./typescript": "./typescript/tsconfig.base.json",
+    "./typescript/node16": "./typescript/tsconfig.node16.json",
+    "./typescript/node18": "./typescript/tsconfig.node18.json",
+    "./typescript/node20": "./typescript/tsconfig.node20.json"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ],
+    "plugins": [
+      [
+        "@semantic-release/commit-analyzer",
+        {
+          "preset": "conventionalcommits",
+          "releaseRules": [
+            {
+              "type": "build",
+              "scope": "deps",
+              "release": "patch"
+            }
+          ]
+        }
+      ],
+      [
+        "@semantic-release/release-notes-generator",
+        {
+          "preset": "conventionalcommits",
+          "presetConfig": {
+            "types": [
+              {
+                "type": "feat",
+                "section": "Features"
+              },
+              {
+                "type": "fix",
+                "section": "Bug Fixes"
+              },
+              {
+                "type": "build",
+                "section": "Dependencies and Other Build Updates",
+                "hidden": false
+              }
+            ]
+          }
+        }
+      ],
+      "@semantic-release/github"
+    ]
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@types/node-forge": "^1.3.11",
+    "@types/pg": "^8.11.6",
+    "chalk": "^5.3.0",
+    "fs-extra": "^11.2.0",
+    "inquirer": "^9.2.23",
+    "node-forge": "^1.3.1",
+    "ora": "^8.0.1",
+    "pg": "^8.12.0",
+    "tsup": "^8.1.0",
+    "typescript": "^5.5.2",
+    "zx": "^8.1.3"
+  },
+  "devDependencies": {
+    "@ryansonshine/commitizen": "^4.2.8",
+    "@ryansonshine/cz-conventional-changelog": "^3.3.4",
+    "@types/fs-extra": "^11.0.4",
+    "@types/inquirer": "^9.0.7",
+    "@types/node": "^20.14.8",
+    "@vercel/style-guide": "^6.0.0",
+    "conventional-changelog-conventionalcommits": "^8.0.0",
+    "eslint": "^8.57.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "semantic-release": "^24.0.0"
+  }
+}
