@@ -82,14 +82,14 @@ const main = async (): Promise<void> => {
 
   const spinner = ora("Checking if the database already exists").start();
   const conn = await connect({
-    user: connection.username,
+    username: connection.username,
     password: connection.password,
     database: connection.database,
     host: connection.host,
     port: connection.port,
   });
 
-  if (!conn) {
+  if (conn) {
     spinner.stop();
     logger.error("Database already exists");
     process.exit(1);

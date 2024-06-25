@@ -11,7 +11,6 @@ class DockerInstaller extends Installer {
 
   private hasDocker = false;
   private dockerVersion = "";
-  private SCRIPTS_FOLDER = "./scripts";
 
   constructor() {
     super("docker");
@@ -54,8 +53,6 @@ class DockerInstaller extends Installer {
     const loader = ora("Run docker-compose up -d").start();
     runCommandSync("docker-compose up -d");
     loader.succeed("Docker is running");
-
-    await this.safeChecks();
   }
 
   /**
@@ -64,8 +61,9 @@ class DockerInstaller extends Installer {
    */
   private async safeChecks(): Promise<void> {
     const spinner = ora("Checking if setup was successful").start();
+    logger.info(JSON.stringify(this.connection));
     const conn = await connect({
-      user: this.connection.username,
+      username: this.connection.username,
       password: this.connection.password,
       database: this.connection.database,
       host: this.connection.host,

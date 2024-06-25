@@ -9,6 +9,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsup src/index.ts --watch",
+    "build": "tsup src/index.ts",
+    "move": "node mover.js",
     "prepare": "husky",
     "clean": "rm -rf ./dist/",
     "cm": "cz",

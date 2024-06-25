@@ -52,10 +52,10 @@ export const createFiles = async (connection: Connection): Promise<void> => {
 export const dockerCompose = (type: "dev" | "prod"): void => {
   fs.writeFileSync(
     `docker-compose${type === "prod" ? ".prod" : ""}.yml`,
-    `version: "3.8"
+    `version: "3"
 services:
   postgres:
-    image: postgres:13
+    image: postgres:alpine
     container_name: postgres
     environment:
       POSTGRES_USER: \${POSTGRES_USER}
@@ -63,9 +63,11 @@ services:
       POSTGRES_DB: \${POSTGRES_DB}
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    expose:
+      - \${POSTGRES_PORT}
     ports:
       - "\${POSTGRES_PORT}:\${POSTGRES_PORT}"
-
+    command: -p \${POSTGRES_PORT}
 volumes:
   postgres_data:
 `

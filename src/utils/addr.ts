@@ -13,5 +13,5 @@ export const checkAddress = async (
     addr = null;
   }
 
-  return !addr;
+  return Boolean(addr);
 };
