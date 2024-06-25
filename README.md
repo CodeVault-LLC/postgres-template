@@ -14,12 +14,12 @@ This template sets up different scripts and settings for postgres to run securel
 
 - SSL
 
-[build-img]: https://github.com/CodeVault-LLC/logsync-node/actions/workflows/release.yml/badge.svg
-[build-url]: https://github.com/CodeVault-LLC/logsync-node/actions/workflows/release.yml
-[issues-img]: https://img.shields.io/github/issues/CodeVault-LLC/logsync-node
-[issues-url]: https://github.com/CodeVault-LLC/logsync-node/issues
-[codecov-img]: https://codecov.io/gh/CodeVault-LLC/logsync-node/branch/main/graph/badge.svg
-[codecov-url]: https://codecov.io/gh/CodeVault-LLC/logsync-node
+[build-img]: https://github.com/CodeVault-LLC/postgres-template/actions/workflows/release.yml/badge.svg
+[build-url]: https://github.com/CodeVault-LLC/postgres-template/actions/workflows/release.yml
+[issues-img]: https://img.shields.io/github/issues/CodeVault-LLC/postgres-template
+[issues-url]: https://github.com/CodeVault-LLC/postgres-template/issues
+[codecov-img]: https://codecov.io/gh/CodeVault-LLC/postgres-template/branch/main/graph/badge.svg
+[codecov-url]: https://codecov.io/gh/CodeVault-LLC/postgres-template
 [semantic-release-img]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
 [semantic-release-url]: https://github.com/semantic-release/semantic-release
 [commitizen-img]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
