@@ -1,3 +1,4 @@
+/* eslint-disable no-console -- Using this to log information */
 import chalk from "chalk";
 
 export const logger = {

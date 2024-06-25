@@ -1,18 +1,18 @@
-import { Connection } from "~/types/connection";
-import { Installer } from "./installer";
+import inquirer from "inquirer";
 import fs from "fs-extra";
 import ora from "ora";
 import { runCommandSync } from "~/utils/cmd";
 import { logger } from "~/utils/logger";
-import inquirer from "inquirer";
 import { generateSSL } from "~/utils/ssl";
+import type { Connection } from "~/types/connection";
+import { Installer } from "./installer";
 
 class ScriptInstaller extends Installer {
-  public static instance: ScriptInstaller = null;
+  public static instance: ScriptInstaller | null = null;
   private SCRIPT_FOLDER = "./scripts";
   private FILE_FOLDER = "./ca_files";
 
-  private scripts: Map<string, string> = new Map(); //backup.sh - ./scripts/backup.sh
+  private scripts = new Map<string, string>();
   private verifiedScripts: string[] = [
     "configure_ssl.sh",
     "backup_db.sh",
@@ -31,11 +31,10 @@ class ScriptInstaller extends Installer {
 
   /**
    * Move script to Docker.
-   * @param file
    * @public
    * @returns void
    */
-  public async moveScriptToDocker(file: string): Promise<void> {
+  public moveScriptToDocker(file: string): void {
     const loader = ora("Moving scripts to Docker").start();
 
     runCommandSync("docker exec postgres mkdir /scripts -p");
@@ -49,11 +48,10 @@ class ScriptInstaller extends Installer {
 
   /**
    * Move a general file to Docker.
-   * @param file
    * @public
    * @returns void
    */
-  public async moveFileToDocker(file: string): Promise<void> {
+  public moveFileToDocker(file: string): void {
     const loader = ora("Moving file to Docker").start();
     runCommandSync("docker exec postgres mkdir /ca_files -p");
 
@@ -83,9 +81,9 @@ class ScriptInstaller extends Installer {
       this.FILE_FOLDER
     );
 
-    await this.moveFileToDocker(keyPath);
-    await this.moveFileToDocker(certPath);
-    await this.moveFileToDocker(caPath);
+    this.moveFileToDocker(keyPath);
+    this.moveFileToDocker(certPath);
+    this.moveFileToDocker(caPath);
 
     const loader = ora("Running configureSSL").start();
     const cmd = runCommandSync(
@@ -101,7 +99,6 @@ class ScriptInstaller extends Installer {
 
   /**
    * Run script in Docker.
-   * @param file
    * @public
    * @returns void
    */
@@ -129,7 +126,7 @@ class ScriptInstaller extends Installer {
     }
   }
 
-  private async loadScripts(): Promise<void> {
+  private loadScripts(): void {
     fs.readdirSync(this.SCRIPT_FOLDER).forEach((file) => {
       const script = fs.readFileSync(`${this.SCRIPT_FOLDER}/${file}`, "utf-8");
       this.scripts.set(file, script);
@@ -140,9 +137,14 @@ class ScriptInstaller extends Installer {
     this.connection = data;
   }
   public async install(): Promise<void> {
-    await this.loadScripts();
+    this.loadScripts();
 
-    const { enabledScripts } = await inquirer.prompt([
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer
+    const {
+      enabledScripts,
+    }: {
+      enabledScripts: string[];
+    } = await inquirer.prompt([
       {
         type: "checkbox",
         name: "enabledScripts",
@@ -153,15 +155,9 @@ class ScriptInstaller extends Installer {
     this.enabledScripts = enabledScripts;
 
     for (const key of this.enabledScripts) {
-      await this.moveScriptToDocker(key).catch((err) => {
-        const ll = ora("Moving scripts to Docker").start();
-        ll.fail("Failed to move scripts to Docker");
-      });
+      this.moveScriptToDocker(key);
       const ll = ora("Running scripts in Docker").start();
-      await this.runDockerScript(key).catch((err) => {
-        ll.fail("Failed to run scripts in Docker");
-        logger.error(err);
-      });
+      await this.runDockerScript(key);
       ll.succeed("Ran scripts in Docker");
     }
 
@@ -169,4 +165,4 @@ class ScriptInstaller extends Installer {
   }
 }
 
-export default ScriptInstaller;
+export { ScriptInstaller };

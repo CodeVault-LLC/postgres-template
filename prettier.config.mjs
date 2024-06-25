@@ -1,3 +1,4 @@
+/* eslint-disable import/no-default-export -- Just a config */
 // @ts-nocheck
 import baseConfig from "./prettier.config.base.mjs";
 

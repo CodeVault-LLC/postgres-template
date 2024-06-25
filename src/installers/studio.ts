@@ -1,13 +1,13 @@
-import { Connection } from "~/types/connection";
-import { Installer } from "./installer";
 import inquirer from "inquirer";
+import ora from "ora";
+import type { Connection } from "~/types/connection";
 import { runCommandSync } from "~/utils/cmd";
 import { logger } from "~/utils/logger";
-import ora from "ora";
 import { askForPassword } from "~/utils/password";
+import { Installer } from "./installer";
 
 class StudioInstaller extends Installer {
-  public static instance: StudioInstaller = null;
+  public static instance: StudioInstaller | null = null;
 
   private password: string | null = null;
   private email: string | null = null;
@@ -25,7 +25,10 @@ class StudioInstaller extends Installer {
   }
 
   public async install(): Promise<void> {
-    const studio = await inquirer.prompt([
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer
+    const studio: {
+      studio: string;
+    } = await inquirer.prompt([
       {
         type: "list",
         name: "studio",
@@ -40,7 +43,7 @@ class StudioInstaller extends Installer {
         break;
       }
       case "dbeaver": {
-        await this.installDBeaver();
+        this.installDBeaver();
         break;
       }
       default: {
@@ -59,7 +62,8 @@ class StudioInstaller extends Installer {
   }
 
   private async installPgAdmin(): Promise<void> {
-    const { email } = await inquirer.prompt([
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer
+    const { email }: { email: string } = await inquirer.prompt([
       {
         type: "input",
         name: "email",
@@ -82,9 +86,9 @@ class StudioInstaller extends Installer {
     this.pullDockerImage("dpage/pgadmin4");
 
     const runCmd = `docker run --name pgadmin4 -p 80:80 -e "PGADMIN_DEFAULT_EMAIL=${
-      email ?? "default@domain.com"
+      email || "default@domain.com"
     }" -e "PGADMIN_DEFAULT_PASSWORD=${
-      passwd ?? "default123"
+      passwd || "default123"
     }" -d dpage/pgadmin4`;
     runCommandSync(runCmd);
 
@@ -100,9 +104,8 @@ class StudioInstaller extends Installer {
     }
   }
 
-  private async installDBeaver(): Promise<void> {
+  private installDBeaver(): void {
     logger.warn("DBeaver is not yet supported");
-    return;
   }
 }
-export default StudioInstaller;
+export { StudioInstaller };

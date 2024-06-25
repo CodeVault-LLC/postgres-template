@@ -9,7 +9,7 @@
   "type": "module",
   "scripts": {
     "dev": "tsup src/index.ts --watch",
-    "prepare": "husky install",
+    "prepare": "husky",
     "clean": "rm -rf ./dist/",
     "cm": "cz",
     "lint": "eslint ./src/ --fix",

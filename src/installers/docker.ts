@@ -1,17 +1,17 @@
 import ora from "ora";
 import { dockerCompose, envFile } from "~/components/files";
-import { Connection } from "~/types/connection";
+import { connect } from "~/utils/pg";
+import type { Connection } from "~/types/connection";
 import { runCommand, runCommandSync } from "~/utils/cmd";
 import { logger } from "~/utils/logger";
 import { Installer } from "./installer";
-import { connect } from "~/utils/pg";
 
 class DockerInstaller extends Installer {
-  public static instance: DockerInstaller = null;
+  public static instance: DockerInstaller | null = null;
 
-  private hasDocker: boolean = false;
-  private dockerVersion: string = "";
-  private SCRIPTS_FOLDER: string = "./scripts";
+  private hasDocker = false;
+  private dockerVersion = "";
+  private SCRIPTS_FOLDER = "./scripts";
 
   constructor() {
     super("docker");
@@ -28,7 +28,6 @@ class DockerInstaller extends Installer {
   /**
    * Check if Docker is installed.
    * @returns boolean
-   * @private
    */
   private async findDockerVersion(): Promise<boolean> {
     const cmd = await runCommand("docker -v");
@@ -61,12 +60,11 @@ class DockerInstaller extends Installer {
 
   /**
    * Make safety checks after installation.
-   * @private
    * @returns void
    */
   private async safeChecks(): Promise<void> {
     const spinner = ora("Checking if setup was successful").start();
-    const conn = connect({
+    const conn = await connect({
       user: this.connection.username,
       password: this.connection.password,
       database: this.connection.database,
@@ -85,7 +83,6 @@ class DockerInstaller extends Installer {
 
   /**
    * Create docker files then run them.
-   * @private
    */
   private createDockerFiles(): void {
     logger.info("Creating Docker files");
@@ -95,4 +92,4 @@ class DockerInstaller extends Installer {
   }
 }
 
-export default DockerInstaller;
+export { DockerInstaller };

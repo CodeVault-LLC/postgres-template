@@ -1,8 +1,9 @@
-import { promises as fs } from "fs";
+import { promises as fs } from "node:fs";
 import pkg from "node-forge";
+
 const { pki } = pkg;
 
-type SSLInfo = {
+interface SSLInfo {
   country: string;
   state: string;
   city: string;
@@ -10,13 +11,13 @@ type SSLInfo = {
   organizationUnit: string;
   commonName: string;
   emailAddress: string;
-};
+}
 
-type GeneratedSSLPaths = {
+interface GeneratedSSLPaths {
   keyPath: string;
   certPath: string;
   caPath: string;
-};
+}
 
 export const generateSSL = async (
   ssl: SSLInfo,

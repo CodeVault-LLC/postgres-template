@@ -1,7 +1,7 @@
-import chalk from "chalk";
-import { exec, execSync } from "child_process";
+import { exec, execSync } from "node:child_process";
+import { logger } from "./logger";
 
-export const runCommand = (command: string) => {
+export const runCommand = (command: string): Promise<string> | undefined => {
   try {
     return new Promise<string>((resolve, reject) => {
       exec(command, (error, stdout, stderr) => {
@@ -15,16 +15,16 @@ export const runCommand = (command: string) => {
       });
     });
   } catch (error) {
-    console.error(chalk.red(`❌ Error executing command: ${command}`));
-    console.error(chalk.red(error.message));
+    logger.error(`Error executing command: ${command}`);
+    logger.error((error as Error).message);
   }
 };
 
-export const runCommandSync = (command: string) => {
+export const runCommandSync = (command: string): string | undefined => {
   try {
     return execSync(command).toString();
   } catch (error) {
-    console.error(chalk.red(`❌ Error executing command: ${command}`));
-    console.error(chalk.red(error.message));
+    logger.error(`Error executing command: ${command}`);
+    logger.error((error as Error).message);
   }
 };

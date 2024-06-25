@@ -1,5 +1,5 @@
+import crypto from "node:crypto";
 import inquirer from "inquirer";
-import crypto from "crypto";
 
 export const generatePassword = async (): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -14,6 +14,7 @@ export const generatePassword = async (): Promise<string> => {
 };
 
 export const askForPassword = async (message: string): Promise<string> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer
   const { wantGenerate } = await inquirer.prompt([
     {
       type: "confirm",
@@ -26,7 +27,8 @@ export const askForPassword = async (message: string): Promise<string> => {
     return generatePassword();
   }
 
-  const { password } = await inquirer.prompt([
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer
+  const { password }: { password: string } = await inquirer.prompt([
     {
       type: "password",
       name: "password",
@@ -36,7 +38,12 @@ export const askForPassword = async (message: string): Promise<string> => {
       type: "password",
       name: "confirmPassword",
       message: "Please confirm your password",
-      validate: (value, answers) => {
+      validate: (
+        value: string,
+        answers: {
+          password: string;
+        }
+      ) => {
         if (value !== answers.password) {
           return "Passwords do not match";
         }

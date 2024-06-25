@@ -1,3 +1,4 @@
+/* eslint-disable import/no-default-export -- Just a config */
 // @ts-nocheck
 /**
  * @type {import('prettier').Config & import("@ianvs/prettier-plugin-sort-imports").PluginConfig}

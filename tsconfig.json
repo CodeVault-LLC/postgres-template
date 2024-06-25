@@ -5,6 +5,8 @@
     "paths": {
       "~/*": ["./src/*"]
     },
+    "allowJs": false,
+    "strictNullChecks": true
   },
   "include": ["src", "tsup.config.ts"]
 }

@@ -1,7 +1,8 @@
+/* eslint-disable import/no-named-as-default-member -- Does not work for some reason. */
 import pg from "pg";
 
 // Make the connection global
-let client: pg.Client;
+let client: pg.Client | null = null;
 
 export const connect = async (config: {
   user: string;
@@ -12,10 +13,6 @@ export const connect = async (config: {
 }): Promise<boolean> => {
   client = new pg.Client(config);
   try {
-    if (!client) {
-      throw new Error("Failed to create a new client");
-    }
-
     await client.connect();
     return true;
   } catch (error) {
@@ -23,4 +20,4 @@ export const connect = async (config: {
   }
 };
 
-export const getClient = () => client as pg.Client;
+export const getClient = (): pg.Client | null => client;

@@ -1,11 +1,14 @@
 import inquirer from "inquirer";
 import ora from "ora";
-import { Connection } from "~/types/connection";
 import fs from "fs-extra";
+import type { Connection } from "~/types/connection";
 import { logger } from "~/utils/logger";
 
-export const createFiles = async (connection: Connection) => {
-  const files = await inquirer.prompt([
+export const createFiles = async (connection: Connection): Promise<void> => {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer
+  const files: {
+    files: string[];
+  } = await inquirer.prompt([
     {
       type: "checkbox",
       name: "files",
@@ -30,23 +33,23 @@ export const createFiles = async (connection: Connection) => {
     const ll = ora(`Creating ${file}`).start();
     switch (file) {
       case ".env":
-        await envFile(connection);
+        envFile(connection);
         break;
       case "Dockerfile":
-        await dockerFile();
+        dockerFile();
         break;
       case "docker-compose.yml":
-        await dockerCompose("dev");
+        dockerCompose("dev");
         break;
       case "docker-compose.prod.yml":
-        await dockerCompose("prod");
+        dockerCompose("prod");
         break;
     }
     ll.succeed(`Created ${file}`);
   }
 };
 
-export const dockerCompose = async (type: "dev" | "prod") => {
+export const dockerCompose = (type: "dev" | "prod"): void => {
   fs.writeFileSync(
     `docker-compose${type === "prod" ? ".prod" : ""}.yml`,
     `version: "3.8"
@@ -69,18 +72,18 @@ volumes:
   );
 };
 
-const dockerFile = async () => {
+const dockerFile = (): void => {
   logger.error("Not implemented yet");
 };
 
-export const envFile = async (connection: Connection) => {
+export const envFile = (connection: Connection): void => {
   fs.writeFileSync(
     ".env",
     `POSTGRES_USER=${connection.username}
 POSTGRES_PASSWORD=${connection.password}
 POSTGRES_DB=${connection.database}
 POSTGRES_HOST=${connection.host}
-POSTGRES_PORT=${connection.port}
+POSTGRES_PORT=${connection.port.toString()}
 `
   );
 };
