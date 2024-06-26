@@ -1,6 +1,5 @@
 import ora from "ora";
-import { dockerCompose, envFile } from "~/components/files";
-import { connect } from "~/utils/pg";
+import { dockerCompose, dockerFile, envFile } from "~/components/files";
 import type { Connection } from "~/types/connection";
 import { runCommand, runCommandSync } from "~/utils/cmd";
 import { logger } from "~/utils/logger";
@@ -11,6 +10,7 @@ class DockerInstaller extends Installer {
 
   private hasDocker = false;
   private dockerVersion = "";
+  private dockerFileName = "codevault_postgres";
 
   constructor() {
     super("docker");
@@ -48,7 +48,7 @@ class DockerInstaller extends Installer {
     }
 
     logger.info(`Docker version ${this.dockerVersion} was found.`);
-    this.createDockerFiles();
+    await this.createDockerFiles();
 
     const loader = ora("Run docker-compose up -d").start();
     runCommandSync("docker-compose up -d");
@@ -56,37 +56,20 @@ class DockerInstaller extends Installer {
   }
 
   /**
-   * Make safety checks after installation.
-   * @returns void
-   */
-  private async safeChecks(): Promise<void> {
-    const spinner = ora("Checking if setup was successful").start();
-    logger.info(JSON.stringify(this.connection));
-    const conn = await connect({
-      username: this.connection.username,
-      password: this.connection.password,
-      database: this.connection.database,
-      host: this.connection.host,
-      port: this.connection.port,
-    });
-
-    if (!conn) {
-      spinner.stop();
-      logger.error("Database does not exist with the correct credentials");
-      process.exit(1);
-    }
-
-    spinner.succeed("Setup was successful");
-  }
-
-  /**
    * Create docker files then run them.
    */
-  private createDockerFiles(): void {
+  private async createDockerFiles(): Promise<void> {
     logger.info("Creating Docker files");
     envFile(this.connection);
-    dockerCompose("dev");
-    dockerCompose("prod");
+    await dockerFile(this.connection);
+
+    // Run the docker file with a special name.
+    const loader = ora("Building Docker image").start();
+    runCommandSync(`docker build -t ${this.dockerFileName} .`);
+    loader.succeed("Docker image built");
+
+    dockerCompose("dev", this.dockerFileName);
+    dockerCompose("prod", this.dockerFileName);
   }
 }
 

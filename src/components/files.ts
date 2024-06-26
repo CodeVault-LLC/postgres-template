@@ -3,6 +3,7 @@ import ora from "ora";
 import fs from "fs-extra";
 import type { Connection } from "~/types/connection";
 import { logger } from "~/utils/logger";
+import { returnDockerFile } from "~/installers/image/image";
 
 export const createFiles = async (connection: Connection): Promise<void> => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer
@@ -36,26 +37,29 @@ export const createFiles = async (connection: Connection): Promise<void> => {
         envFile(connection);
         break;
       case "Dockerfile":
-        dockerFile();
+        await dockerFile(connection);
         break;
       case "docker-compose.yml":
-        dockerCompose("dev");
+        dockerCompose("dev", "codevault_postgres");
         break;
       case "docker-compose.prod.yml":
-        dockerCompose("prod");
+        dockerCompose("prod", "codevault_postgres");
         break;
     }
     ll.succeed(`Created ${file}`);
   }
 };
 
-export const dockerCompose = (type: "dev" | "prod"): void => {
+export const dockerCompose = (
+  type: "dev" | "prod",
+  dockerName: string
+): void => {
   fs.writeFileSync(
     `docker-compose${type === "prod" ? ".prod" : ""}.yml`,
     `version: "3"
 services:
   postgres:
-    image: postgres:alpine
+    image: ${dockerName || "postgres"}
     container_name: postgres
     environment:
       POSTGRES_USER: \${POSTGRES_USER}
@@ -74,8 +78,10 @@ volumes:
   );
 };
 
-const dockerFile = (): void => {
-  logger.error("Not implemented yet");
+export const dockerFile = async (connection: Connection): Promise<void> => {
+  const dockerResponse = await returnDockerFile(connection);
+
+  fs.writeFileSync("Dockerfile", dockerResponse);
 };
 
 export const envFile = (connection: Connection): void => {
