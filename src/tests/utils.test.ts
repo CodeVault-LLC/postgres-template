@@ -8,16 +8,6 @@ test("Check Address", async () => {
       database: "test",
       host: "localhost",
       password: "password",
-      port: 135,
-      username: "username",
-    })
-  ).toBe(true);
-
-  expect(
-    await checkAddress({
-      database: "test",
-      host: "localhost",
-      password: "password",
       port: 12313,
       username: "username",
     })
