@@ -13,18 +13,23 @@ export const generatePassword = async (): Promise<string> => {
   });
 };
 
-export const askForPassword = async (message: string): Promise<string> => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer
-  const { wantGenerate } = await inquirer.prompt([
-    {
-      type: "confirm",
-      name: "wantGenerate",
-      message: "Would you like to generate a password?",
-    },
-  ]);
+export const askForPassword = async (
+  message: string,
+  askPassword: boolean
+): Promise<string> => {
+  if (askPassword) {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer
+    const { wantGenerate } = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "wantGenerate",
+        message: "Would you like to generate a password?",
+      },
+    ]);
 
-  if (wantGenerate) {
-    return generatePassword();
+    if (wantGenerate) {
+      return generatePassword();
+    }
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer

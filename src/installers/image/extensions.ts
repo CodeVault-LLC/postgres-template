@@ -1,6 +1,9 @@
 import inquirer from "inquirer";
 
-export const verifiedExtensions: string[] = ["postgresql-16-pgvector", "postgresql-16-postgis"];
+export const verifiedExtensions: string[] = [
+  "postgresql-16-pgvector",
+  "postgresql-16-postgis",
+];
 
 export const addExtensions = async (): Promise<string> => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer

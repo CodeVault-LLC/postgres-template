@@ -1,4 +1,5 @@
 import type { Connection } from "~/types/connection";
+import type { Mode } from "~/types/mode";
 import { addTools } from "./tools";
 import { addExtensions } from "./extensions";
 
@@ -20,11 +21,12 @@ EXPOSE ${connection.port.toString()}
 `;
 
 export const returnDockerFile = async (
-  connection: Connection
+  connection: Connection,
+  mode: Mode
 ): Promise<string> => {
   const base = baseDockerImage;
   const creds = credentails(connection);
-  const tools = await addTools();
+  const tools = await addTools(mode);
   const extensions = await addExtensions();
 
   return `${base}

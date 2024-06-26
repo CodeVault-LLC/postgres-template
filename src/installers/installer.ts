@@ -1,4 +1,5 @@
 import type { Connection } from "~/types/connection";
+import type { Mode } from "~/types/mode";
 
 /**
  * Abstract class for installers. All installers should extend this class.
@@ -19,5 +20,5 @@ export abstract class Installer {
   /**
    * Abstract method for installing the project.
    */
-  public abstract install(): void;
+  public abstract install(mode: Mode): void;
 }

@@ -5,6 +5,7 @@ import { runCommandSync } from "~/utils/cmd";
 import { logger } from "~/utils/logger";
 import { generateSSL } from "~/utils/ssl";
 import type { Connection } from "~/types/connection";
+import type { Mode } from "~/types/mode";
 import { Installer } from "./installer";
 
 class ScriptInstaller extends Installer {
@@ -136,7 +137,7 @@ class ScriptInstaller extends Installer {
   public setupData(data: Connection): void {
     this.connection = data;
   }
-  public async install(): Promise<void> {
+  public async install(_mode: Mode): Promise<void> {
     this.loadScripts();
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- We trust inquirer

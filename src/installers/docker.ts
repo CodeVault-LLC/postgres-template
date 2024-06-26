@@ -3,6 +3,7 @@ import { dockerCompose, dockerFile, envFile } from "~/components/files";
 import type { Connection } from "~/types/connection";
 import { runCommand, runCommandSync } from "~/utils/cmd";
 import { logger } from "~/utils/logger";
+import type { Mode } from "~/types/mode";
 import { Installer } from "./installer";
 
 class DockerInstaller extends Installer {
@@ -39,7 +40,7 @@ class DockerInstaller extends Installer {
     return false;
   }
 
-  public async install(): Promise<void> {
+  public async install(mode: Mode): Promise<void> {
     this.hasDocker = await this.findDockerVersion();
 
     if (!this.hasDocker) {
@@ -48,7 +49,7 @@ class DockerInstaller extends Installer {
     }
 
     logger.info(`Docker version ${this.dockerVersion} was found.`);
-    await this.createDockerFiles();
+    await this.createDockerFiles(mode);
 
     const loader = ora("Run docker-compose up -d").start();
     runCommandSync("docker-compose up -d");
@@ -58,10 +59,10 @@ class DockerInstaller extends Installer {
   /**
    * Create docker files then run them.
    */
-  private async createDockerFiles(): Promise<void> {
+  private async createDockerFiles(mode: Mode): Promise<void> {
     logger.info("Creating Docker files");
     envFile(this.connection);
-    await dockerFile(this.connection);
+    await dockerFile(this.connection, mode);
 
     // Run the docker file with a special name.
     const loader = ora("Building Docker image").start();
