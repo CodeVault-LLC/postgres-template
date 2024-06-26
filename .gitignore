@@ -6,3 +6,4 @@
 .eslintcache
 /dist.tar
 *docker-compose*.yml
+Dockerfile
