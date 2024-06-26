@@ -1,11 +1,11 @@
-name: Release
+name: Staging
 on:
   push:
     branches:
-      - main
+      - stage
 jobs:
-  release:
-    name: Release
+  stage:
+    name: Stage
     permissions:
       contents: write
       issues: write
@@ -25,17 +25,5 @@ jobs:
         run: npm ci
       - name: Test
         run: npm test
-      - name: Build
-        run: npm run build
-      - name: Move
-        run: npm run move
-
-      - name: Compress
-        run: tar -cvf dist.tar dist
-
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npx semantic-release
       - name: Upload Code Coverage
         uses: codecov/codecov-action@v3.1.0
