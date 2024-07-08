@@ -38,8 +38,8 @@ RUN apt-get update
 ${tools}
 
 ${extensions}
-
-# Cleanup
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 `;
 };
+
+// # Cleanup
+// RUN apt-get clean && rm -rf /var/lib/apt/lists/*

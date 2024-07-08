@@ -21,9 +21,13 @@ export const addExtensions = async (): Promise<string> => {
   ]);
 
   return `# Install extensions
-RUN apt-get install postgresql-contrib
+RUN apt-get install -y --no-install-recommends postgresql-contrib
 
-RUN apt-get install -y --no-install-recommends \\
+${
+  extensions.length < 1
+    ? ""
+    : "RUN apt-get install -y --no-install-recommends \\"
+}
 ${
   extensions.length < 1
     ? ""
